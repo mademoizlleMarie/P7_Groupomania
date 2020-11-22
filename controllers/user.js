@@ -22,3 +22,17 @@ exports.signup = (req, res, next) => {
         })
         .catch(error => res.status(500).json({ error }));
 };
+
+
+exports.login = (req, res, next) => {
+    let email = req.body.email;
+    let password = req.body.password;
+
+    userModels.login(email,password)
+        .then((response) =>{
+            res.status(200).json(JSON.stringify(response))
+        })
+        .catch((error) =>{
+            res.status(400).json(error)
+        })
+};
