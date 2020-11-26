@@ -33,6 +33,22 @@ exports.modifyArticle = (req, res, next) => {
         })
 };
 
+exports.deleteArticle = (req, res, next) => {
+    ArticlesModels.findOne({
+        _id: req.params.id
+    }).then(article => {
+        console.log(article.result[0].image_article)
+        const filename = article.result[0].image_article.split('/images/');
+        console.log(filename);
+        fs.unlink(`images/${filename}`, () => {
+          ArticlesModels.delete({_id: req.params.id})
+                .then(() => res.status(200).json({message: 'Objet supprimé !'}))
+                .catch((error) => {
+                    res.status(400).json({error})
+                })
+        });
+    })
+};
 
 exports.getOneArticle = (req, res, next) => {
     ArticlesModels.findOne({
