@@ -40,6 +40,17 @@ class ArticlesModels {
         });
     }
 
+    findOne(id) {
+        let sql = 'SELECT * FROM article where id_article = ?';
+        sql = mysql.format(sql, id._id);
+        return new Promise((resolve, reject) => {
+            db.query(sql, function (err, result) {
+                if (err) reject({error: err});
+                resolve({result})
+            })
+        })
+    }
+
 
 }
 module.exports = ArticlesModels;

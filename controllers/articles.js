@@ -33,18 +33,19 @@ exports.modifyArticle = (req, res, next) => {
         })
 };
 
-exports.deleteArticle = (req, res, next) => {
-
-};
 
 exports.getOneArticle = (req, res, next) => {
-
+    ArticlesModels.findOne({
+        _id: req.params.id
+    }).then(article => {
+        console.log(article.result[0])
+    }).catch(
+        error => res.status(404).json({error: error})
+    );
 };
 
-exports.getAllArticles =  (req, res, next) => {
 
-};
-
+//bonus
 exports.likeOrDislikeArticle =  (req, res, next) => {
 
 
