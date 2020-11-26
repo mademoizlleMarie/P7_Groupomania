@@ -44,6 +44,13 @@ exports.getOneArticle = (req, res, next) => {
     );
 };
 
+exports.getAllArticles =  (req, res, next) => {
+    ArticlesModels.findAll({}).then(articles => {
+        res.status(200).json(console.log(articles.result))
+    }).catch(
+        error => res.status(400).json({error: error})
+    );
+};
 
 //bonus
 exports.likeOrDislikeArticle =  (req, res, next) => {

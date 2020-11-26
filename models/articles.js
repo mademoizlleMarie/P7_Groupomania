@@ -51,6 +51,17 @@ class ArticlesModels {
         })
     }
 
+    findAll() {
+        let sql = 'SELECT * FROM article ';
+        sql = mysql.format(sql);
+        return new Promise((resolve, reject) => {
+            db.query(sql, function (err, result) {
+                if (err) reject({error: err});
+                resolve({result})
+            })
+        })
+    }
+
 
 }
 module.exports = ArticlesModels;
