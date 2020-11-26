@@ -6,6 +6,8 @@ const multer = require('../middleware/multer-config');
 
 const articlesCtrl = require('../controllers/articles');
 
+//:id paramètre de route dynamique
+
 router.get('/', auth, articlesCtrl.getAllArticles);
 router.post('/', auth,multer, articlesCtrl.createArticle);
 router.get('/:id', auth, articlesCtrl.getOneArticle);
