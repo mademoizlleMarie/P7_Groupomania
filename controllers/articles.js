@@ -61,8 +61,15 @@ exports.getOneArticle = (req, res, next) => {
 };
 
 exports.getAllArticles =  (req, res, next) => {
+    console.log(req.body);
     ArticlesModels.findAll({}).then(articles => {
-        res.status(200).json(console.log(articles.result))
+        const mappedarticles = articles.result.map((article) => {
+            article.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + article.image_article;
+            return article;
+        });
+        res.status(200).json(
+            mappedarticles,
+        )
     }).catch(
         error => res.status(400).json({error: error})
     );
@@ -70,7 +77,6 @@ exports.getAllArticles =  (req, res, next) => {
 
 //bonus
 exports.likeOrDislikeArticle =  (req, res, next) => {
-
 
 };
 
