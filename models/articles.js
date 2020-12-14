@@ -8,7 +8,7 @@ class ArticlesModels {
         return new Promise((resolve, reject) => {
             db.query(sql, function (err, result) {
                 if (err) reject({error: err});
-                resolve({message: 'Article bien enregistré'})
+                resolve(result,{message: 'Article bien enregistré'})
             })
         })
     }
@@ -42,7 +42,7 @@ class ArticlesModels {
 
     findOne(id) {
         let sql = 'SELECT * FROM article where id_article = ?';
-        sql = mysql.format(sql, id._id);
+        sql = mysql.format(sql, id);
         return new Promise((resolve, reject) => {
             db.query(sql, function (err, result) {
                 if (err) reject({error: err});
@@ -52,7 +52,7 @@ class ArticlesModels {
     }
 
     findAll() {
-        let sql = 'SELECT * FROM article ';
+        let sql = 'SELECT * FROM article order by id_article desc';
         sql = mysql.format(sql);
         return new Promise((resolve, reject) => {
             db.query(sql, function (err, result) {

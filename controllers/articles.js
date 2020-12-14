@@ -9,15 +9,14 @@ exports.createArticle = (req, res, next) => {
     article.image = req.file.filename;
 
     ArticlesModels.create(article)
-        .then((response) => {
-            res.status(201).json(JSON.stringify(response))
+        .then(function (response) {
+            ArticlesModels.findOne(response.insertId)
         })
+        .then(() => res.status(201).json({message: 'crée !'}))
         .catch((error) => {
-            console.error(error);
             res.status(400).json({error})
         })
 };
-
 exports.modifyArticle = (req, res, next) => {
     const articleToModify = req.file ?
         {
@@ -32,14 +31,11 @@ exports.modifyArticle = (req, res, next) => {
             res.status(400).json({error})
         })
 };
-
 exports.deleteArticle = (req, res, next) => {
     ArticlesModels.findOne({
         _id: req.params.id
     }).then(article => {
-        console.log(article.result[0].image_article)
         const filename = article.result[0].image_article.split('/images/');
-        console.log(filename);
         fs.unlink(`images/${filename}`, () => {
           ArticlesModels.delete({_id: req.params.id})
                 .then(() => res.status(200).json({message: 'Objet supprimé !'}))
@@ -49,7 +45,6 @@ exports.deleteArticle = (req, res, next) => {
         });
     })
 };
-
 exports.getOneArticle = (req, res, next) => {
     ArticlesModels.findOne({
         _id: req.params.id
@@ -59,9 +54,7 @@ exports.getOneArticle = (req, res, next) => {
         error => res.status(404).json({error: error})
     );
 };
-
 exports.getAllArticles =  (req, res, next) => {
-    console.log(req.body);
     ArticlesModels.findAll({}).then(articles => {
         const mappedarticles = articles.result.map((article) => {
             article.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + article.image_article;
