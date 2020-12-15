@@ -68,6 +68,20 @@ exports.getAllArticles =  (req, res, next) => {
     );
 };
 
+
+
+exports.createCommentaire = (req, res, next) => {
+    const commentaire = JSON.parse(req.body);
+console.log(commentaire);
+ /*   ArticlesModels.createCommentaire(commentaire)
+        .then(function (response) {
+            ArticlesModels.findOne(response.insertId)
+        })
+        .then(() => res.status(201).json({message: 'crée !'}))
+        .catch((error) => {
+            res.status(400).json({error})
+        })*/
+};
 //bonus
 exports.likeOrDislikeArticle =  (req, res, next) => {
 
