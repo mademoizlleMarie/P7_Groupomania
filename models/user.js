@@ -5,12 +5,12 @@ const jwt = require('jsonwebtoken');
 
 class UserModels {
     signup(eltInsert) {
+        console.log(eltInsert);
         let sql = 'SELECT * FROM user WHERE email = ?';
         sql = mysql.format(sql, eltInsert[0]);
         return new Promise((resolve, reject) => {
             db.query(sql, function (err, result) {
                 if (err) reject({err});
-                console.log(result[0]);
                 if (!result[0]) {
                     let sql = 'INSERT INTO user VALUES(NULL,?, ?, ?, ?)';
                     sql = mysql.format(sql, eltInsert);
@@ -33,7 +33,6 @@ class UserModels {
         return new Promise((resolve, reject) => {
             db.query(sql, function (err, result) {
                 if (err) reject({err});
-               console.log(result[0]);
                 if (!result[0]) {
                     reject({error: 'Utilisateur introuvable !'});
                 } else {
@@ -43,9 +42,9 @@ class UserModels {
                                 return reject({error: 'Mot de passe incorrect !'});
                             }
                             resolve({
-                                userId: result[0].id,
+                                userId: result[0].id_user,
                                 token: jwt.sign(
-                                    {userId: result[0].id},
+                                    {userId: result[0].id_user},
                                     'RANDOM_TOKEN_SECRET',
                                     {expiresIn: '24h'}
                                 )
@@ -56,5 +55,27 @@ class UserModels {
             });
         });
     }
+    findOneUser(id) {
+        let sql = 'SELECT id_user, email , firstName, lastName FROM user where id_user = ?';
+        sql = mysql.format(sql, id._id);
+        return new Promise((resolve, reject) => {
+            db.query(sql, function (err, result) {
+                if (err) reject({error: err});
+                resolve({result})
+            })
+        })
+    }
+    updateProfil(id,email,firstName,lastName) {
+        let sql = 'UPDATE user SET email = ?, firstName = ?, lastName = ? where id_user = ?';
+        sql = mysql.format(sql, [email,firstName,lastName,id]);
+        console.log(sql);
+        return new Promise((resolve, reject) => {
+            db.query(sql, function (err, result) {
+                if (err) reject({error: err});
+                resolve({result})
+            })
+        })
+    }
+
 }
 module.exports = UserModels;
