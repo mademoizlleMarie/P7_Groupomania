@@ -8,7 +8,6 @@ exports.signup = (req, res, next) => {
     let password = req.body.password;
     let firstName = req.body.firstName;
     let lastName = req.body.lastName;
-    console.log(req.body)
     bcrypt.hash(password, 10)
         .then(hash => {
             let eltInsert = [email,hash,firstName,lastName];
@@ -50,6 +49,16 @@ exports.updateProfil = (req, res, next) => {
     let firstname = req.body.firstName;
     let lastname = req.body.lastName;
     userModels.updateProfil(id,email,firstname,lastname)
+        .then((response) => {
+            res.status(200).json(response.result)
+        })
+        .catch(
+        error => res.status(404).json({error: error})
+    );
+};
+exports.deleteProfil = (req, res, next) => {
+    let id = req.body.id_user;
+    userModels.deleteProfil(id)
         .then((response) => {
             res.status(200).json(response.result)
         })
