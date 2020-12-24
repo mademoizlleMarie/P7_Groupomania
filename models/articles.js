@@ -19,16 +19,16 @@ class ArticlesModels {
         return new Promise((resolve) => {
             db.query(sql1, function (err, result) {
                 if (err) throw err;
-                if (body.userId == result[0].fk_id_user && body.filename == result[0].image_article) {
-                    let sql2 = 'UPDATE article SET titre_article = ?, corps_article = ? WHERE id_article = ? AND fk_id_user = ?';
-                    sql2 = mysql.format(sql2, [body.titre, body.commentaire, body._id, body.userId]);
+                if ((body.userId == result[0].fk_id_user ||  body.profil == "admin" ) && body.filename == result[0].image_article) {
+                    let sql2 = 'UPDATE article SET titre_article = ?, corps_article = ? WHERE id_article = ? ';
+                    sql2 = mysql.format(sql2, [body.titre, body.commentaire, body._id]);
                     db.query(sql2, function (err, result, fields) {
                         if (err) throw err;
                         resolve({message: 'Post modifié !'});
                     })
-                } else if (body.userId == result[0].fk_id_user && body.filename != result[0].image_article) {
-                    let sql3 = 'UPDATE article SET titre_article = ?, corps_article = ?, image_article = ?  WHERE id_article = ? AND fk_id_user = ?';
-                    sql3 = mysql.format(sql3, [body.titre, body.commentaire,body.filename, body._id, body.userId]);
+                } else if ((body.userId == result[0].fk_id_user||  body.profil == "admin" ) && body.filename != result[0].image_article) {
+                    let sql3 = 'UPDATE article SET titre_article = ?, corps_article = ?, image_article = ?  WHERE id_article = ? ';
+                    sql3 = mysql.format(sql3, [body.titre, body.commentaire,body.filename, body._id]);
                     db.query(sql3, function (err, result, fields) {
                         if (err) throw err;
                         resolve({message: 'Post et image modifiés !'});

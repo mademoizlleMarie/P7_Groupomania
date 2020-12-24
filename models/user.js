@@ -5,14 +5,13 @@ const jwt = require('jsonwebtoken');
 
 class UserModels {
     signup(eltInsert) {
-        console.log(eltInsert);
         let sql = 'SELECT * FROM user WHERE email = ?';
         sql = mysql.format(sql, eltInsert[0]);
         return new Promise((resolve, reject) => {
             db.query(sql, function (err, result) {
                 if (err) reject({err});
                 if (!result[0]) {
-                    let sql = 'INSERT INTO user VALUES(NULL,?, ?, ?, ?)';
+                    let sql = 'INSERT INTO user (email,password,firstName,lastName) VALUES(?, ?, ?, ?)';
                     sql = mysql.format(sql, eltInsert);
                     return new Promise((resolve, reject) => {
                         db.query(sql, function (err, result) {
@@ -26,8 +25,9 @@ class UserModels {
             })
         })
     }
-    login(email,password) {
-        let sql = 'SELECT * FROM user WHERE email = ?';
+
+    login(email, password) {
+        let sql = 'SELECT user.id_user,user.password, profil.nom FROM user INNER JOIN profil ON profil.id = user.fk_profil_id  WHERE email = ?';
         sql = mysql.format(sql, email);
 
         return new Promise((resolve, reject) => {
@@ -43,8 +43,12 @@ class UserModels {
                             }
                             resolve({
                                 userId: result[0].id_user,
+                                nomProfil: result[0].nom,
                                 token: jwt.sign(
-                                    {userId: result[0].id_user},
+                                    {
+                                        userId: result[0].id_user,
+                                        profil: result[0].nom
+                                    },
                                     'RANDOM_TOKEN_SECRET',
                                     {expiresIn: '24h'}
                                 )
@@ -55,6 +59,7 @@ class UserModels {
             });
         });
     }
+
     findOneUser(id) {
         let sql = 'SELECT id_user, email , firstName, lastName FROM user where id_user = ?';
         sql = mysql.format(sql, id._id);
@@ -65,10 +70,10 @@ class UserModels {
             })
         })
     }
-    updateProfil(id,email,firstName,lastName) {
+
+    updateProfil(id, email, firstName, lastName) {
         let sql = 'UPDATE user SET email = ?, firstName = ?, lastName = ? where id_user = ?';
-        sql = mysql.format(sql, [email,firstName,lastName,id]);
-        console.log(sql);
+        sql = mysql.format(sql, [email, firstName, lastName, id]);
         return new Promise((resolve, reject) => {
             db.query(sql, function (err, result) {
                 if (err) reject({error: err});
@@ -77,5 +82,15 @@ class UserModels {
         })
     }
 
+    deleteProfil(id) {
+        let sql = 'UPDATE user SET email = ?,password = ? , firstName = ?, lastName = ? where id_user = ?';
+        sql = mysql.format(sql, [id , null, 'supprimé','utilisateur', id]);
+        return new Promise((resolve, reject) => {
+            db.query(sql, function (err, result) {
+                if (err) reject({error: err});
+                resolve({result})
+            })
+        })
+    }
 }
 module.exports = UserModels;
