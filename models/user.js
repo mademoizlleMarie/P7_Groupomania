@@ -10,17 +10,17 @@ class UserModels {
         return new Promise((resolve, reject) => {
             db.query(sql, function (err, result) {
                 if (err) reject({err});
-                if (!result[0]) {
+                if (!result[0])  {
                     let sql = 'INSERT INTO user (email,password,firstName,lastName) VALUES(?, ?, ?, ?)';
                     sql = mysql.format(sql, eltInsert);
-                    return new Promise((resolve, reject) => {
+                    return new Promise((resolve1, reject) => {
                         db.query(sql, function (err, result) {
                             if (err) reject({error: 'Erreur dans l\'inscription'});
-                            resolve({message: 'Nouvel utilisateur !'})
+                            resolve({message:'Utilisateur crée!'})
                         })
                     })
                 } else {
-                    reject({error: 'Utilisateur déjà crée!'});
+                    reject( 'Utilisateur déjà crée!');
                 }
             })
         })
